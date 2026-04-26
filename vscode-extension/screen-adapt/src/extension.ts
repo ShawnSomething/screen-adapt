@@ -5,8 +5,41 @@ import { getPropertiesFromSelector } from './properties'
 import { generateVariants } from './generator'
 import { insertVariants, hasExistingVariants } from './inserter'
 import { globalScan } from './scanner'
+import { hasScreensBlock, insertScreensBlock } from './initialiser'
 
 export function activate(context: vscode.ExtensionContext) {
+    //initialiser
+    const initDisposable = vscode.commands.registerCommand('screen-adapt.initialise', () => {
+    const editor = vscode.window.activeTextEditor
+    if (!editor) {
+        vscode.window.showErrorMessage('No active file.')
+        return
+    }
+
+    const document = editor.document
+    const text = document.getText()
+
+    if (hasScreensBlock(text)) {
+        vscode.window.showWarningMessage('An @screens block already exists in this file.')
+        return
+    }
+
+    const newText = insertScreensBlock(text)
+    const fullRange = new vscode.Range(
+        document.positionAt(0),
+        document.positionAt(text.length)
+    )
+
+    editor.edit(editBuilder => {
+        editBuilder.replace(fullRange, newText)
+    })
+
+    vscode.window.showInformationMessage('Screen Adapt: @screens block added.')
+})
+
+    context.subscriptions.push(initDisposable)
+
+    //single scaffold
     const disposable = vscode.commands.registerCommand('screen-adapt.scaffoldVariants', () => {
         const editor = vscode.window.activeTextEditor
         if (!editor) {
@@ -18,6 +51,11 @@ export function activate(context: vscode.ExtensionContext) {
         const text = document.getText()
         const offset = document.offsetAt(editor.selection.active)
         const screens = parseScreens(text)
+        if (screens.size === 0) {
+            vscode.window.showErrorMessage('No @screens block found. Run "Screen Adapt: Initialise @screens" first.')
+            return
+        }
+
         const selector = getSelectorAtCursor(text, offset)
 
         if (!selector) {
@@ -49,7 +87,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(disposable)
 
-
+    //global scaffold
     const globalScanDisposable = vscode.commands.registerCommand('screen-adapt.globalScan', () => {
     const editor = vscode.window.activeTextEditor
     if (!editor) {
@@ -62,7 +100,7 @@ export function activate(context: vscode.ExtensionContext) {
     const screens = parseScreens(text)
 
     if (screens.size === 0) {
-        vscode.window.showErrorMessage('No @screens block found.')
+        vscode.window.showErrorMessage('No @screens block found. Run "Screen Adapt: Initialise @screens" first.')
         return
     }
 

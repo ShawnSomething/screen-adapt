@@ -13,12 +13,21 @@ function parseNumeric(value: string): { num: number; unit: string } | null {
 
 // Extract the max-width px value from a media query string
 function extractMaxWidth(mediaQuery: string): number | null {
-    const match = mediaQuery.match(/max-width:\s*([\d.]+)(px|em)/)
-    if (!match) return null
-    const value = parseFloat(match[1])
-    const unit = match[2]
-    // Convert em to px (assume 16px base)
-    return unit === 'em' ? value * 16 : value
+    const maxMatch = mediaQuery.match(/max-width:\s*([\d.]+)(px|em)/)
+    if (maxMatch) {
+        const value = parseFloat(maxMatch[1])
+        const unit = maxMatch[2]
+        return unit === 'em' ? value * 16 : value
+    }
+
+    const minMatch = mediaQuery.match(/min-width:\s*([\d.]+)(px|em)/)
+    if (minMatch) {
+        const value = parseFloat(minMatch[1])
+        const unit = minMatch[2]
+        return unit === 'em' ? value * 16 : value
+    }
+
+    return null
 }
 
 const MATH_PROPERTIES = new Set([
@@ -87,7 +96,6 @@ export function generateVariants(
 
     for (const [screenName, mediaQuery] of screens) {
         const targetWidth = extractMaxWidth(mediaQuery)
-        const scaleFactor = targetWidth ? targetWidth / BASE_VIEWPORT : 0.5
 
         const generated = properties.map((prop) => {
             if (MATH_PROPERTIES.has(prop.name)) {

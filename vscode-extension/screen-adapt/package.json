@@ -20,6 +20,10 @@
       {
         "command": "screen-adapt.globalScan",
         "title": "Screen Adapt: Adapt all selectors"
+      },
+      {
+        "command": "screen-adapt.initialise",
+        "title": "Screen Adapt: Initialise @screens"
       }
     ],
     "keybindings": [
@@ -34,14 +38,26 @@
         "key": "ctrl+shift+a",
         "mac": "cmd+shift+a",
         "when": "editorLangId == css"
+      },
+            {
+        "command": "screen-adapt.scaffoldVariants",
+        "key": "ctrl+shift+s",
+        "mac": "cmd+shift+s",
+        "when": "editorLangId == css"
+      },
+      {
+        "command": "screen-adapt.initialise",
+        "key": "ctrl+shift+i",
+        "mac": "cmd+shift+i",
+        "when": "editorLangId == css"
       }
     ],
     "menus": {
-      "editor/content": [
+      "editor/context": [
         {
           "command": "screen-adapt.scaffoldVariants",
           "when": "editorLangId == css",
-          "group": "navigation"         
+          "group": "9_cutcopypaste"         
         }
       ]
     }
