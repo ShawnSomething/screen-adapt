@@ -4,6 +4,7 @@
   "description": "A PostCSS plugin that compiles custom screen at-rules into standard media queries.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": ["dist"],
   "scripts": {
     "build": "tsc",
     "dev": "ts-node src/index.ts",
@@ -20,9 +21,9 @@
     "type": "git",
     "url": "git+https://github.com/ShawnSomething/screen-adapt.git"
   },
-  "keywords": [],
+  "keywords": ["postcss", "postcss-plugin", "responsive", "css", "media-queries"],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/ShawnSomething/screen-adapt/issues"
   },
