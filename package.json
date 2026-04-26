@@ -1,7 +1,7 @@
 {
   "name": "screen-adapt",
   "version": "1.0.0",
-  "description": "A VS Code extension that makes responsive CSS the default workflow. Write CSS once, declare which screen sizes you care about, and the extension scaffolds the responsive variants automatically",
+  "description": "A PostCSS plugin that compiles custom screen at-rules into standard media queries.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -11,6 +11,10 @@
     "test": "jest",
     "lint": "eslint src --ext .ts",
     "format": "prettier --write \"src/**/*.ts\""
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node"
   },
   "repository": {
     "type": "git",
@@ -27,7 +31,10 @@
     "postcss": "^8.0.0"
   },
   "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "jest": "^30.3.0",
     "postcss": "^8.5.10",
+    "ts-jest": "^29.4.9",
     "ts-node": "^10.9.2",
     "typescript": "^6.0.3"
   }
