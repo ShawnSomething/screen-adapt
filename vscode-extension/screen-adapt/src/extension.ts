@@ -1,26 +1,42 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
-import * as vscode from 'vscode';
+import * as vscode from 'vscode'
+import { parseScreens } from './parser'
+import { getSelectorAtCursor } from './selector'
+import { getPropertiesFromSelector } from './properties'
+import { generateVariants } from './generator'
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+    const disposable = vscode.commands.registerCommand('screen-adapt.helloWorld', () => {
+        const editor = vscode.window.activeTextEditor
+        if (!editor) {
+            vscode.window.showErrorMessage('No active file.')
+            return
+        }
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "screen-adapt" is now active!');
+        const text = editor.document.getText()
+        const offset = editor.document.offsetAt(editor.selection.active)
+        const screens = parseScreens(text)
+        const selector = getSelectorAtCursor(text, offset)
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	const disposable = vscode.commands.registerCommand('screen-adapt.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from screen-adapt!');
-	});
+        if (!selector) {
+            vscode.window.showErrorMessage('No selector found at cursor.')
+            return
+        }
 
-	context.subscriptions.push(disposable);
+        const properties = getPropertiesFromSelector(text, selector)
+        const variants = generateVariants(properties, screens)
+
+        const summary = variants.map(block => {
+            const props = block.properties
+                .map(p => `  ${p.name}: ${p.value}${p.comment ? ` /* ${p.comment} */` : ''}`)
+                .join('\n')
+            return `@${block.screenName} {\n${props}\n}`
+        }).join('\n\n')
+
+        console.log(summary)
+        vscode.window.showInformationMessage(`Generated ${variants.length} variants — check the debug console.`)
+    })
+
+    context.subscriptions.push(disposable)
 }
 
-// This method is called when your extension is deactivated
 export function deactivate() {}

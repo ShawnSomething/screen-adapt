@@ -1,0 +1,33 @@
+@screens {
+  mobile-vertical: (max-width: 480px) and (orientation: portrait);
+  mobile-horizontal: (max-width: 844px) and (orientation: landscape);
+  tablet: (max-width: 1024px);
+}
+
+.hero {
+  width: 800px;
+  font-size: 32px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+
+  @mobile-vertical {
+    width: 100vw;
+    font-size: 22px;
+    grid-template-columns: 1fr;
+  }
+
+  @tablet {
+    width: 90vw;
+    font-size: 28px;
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.header {
+  position: relative;
+  padding: 48px;
+
+  @mobile-vertical {
+    padding: 16px;
+  }
+}
