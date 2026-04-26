@@ -3,6 +3,7 @@ import { parseScreens } from './parser'
 import { getSelectorAtCursor } from './selector'
 import { getPropertiesFromSelector } from './properties'
 import { generateVariants } from './generator'
+import { insertVariants, hasExistingVariants } from './inserter'
 
 export function activate(context: vscode.ExtensionContext) {
     const disposable = vscode.commands.registerCommand('screen-adapt.helloWorld', () => {
@@ -12,8 +13,9 @@ export function activate(context: vscode.ExtensionContext) {
             return
         }
 
-        const text = editor.document.getText()
-        const offset = editor.document.offsetAt(editor.selection.active)
+        const document = editor.document
+        const text = document.getText()
+        const offset = document.offsetAt(editor.selection.active)
         const screens = parseScreens(text)
         const selector = getSelectorAtCursor(text, offset)
 
@@ -23,17 +25,25 @@ export function activate(context: vscode.ExtensionContext) {
         }
 
         const properties = getPropertiesFromSelector(text, selector)
+
+        if (hasExistingVariants(text, selector)) {
+            vscode.window.showWarningMessage(`${selector} already has screen variants. Remove them first.`)
+            return
+        }
+
         const variants = generateVariants(properties, screens)
+        const newText = insertVariants(text, selector, variants)
 
-        const summary = variants.map(block => {
-            const props = block.properties
-                .map(p => `  ${p.name}: ${p.value}${p.comment ? ` /* ${p.comment} */` : ''}`)
-                .join('\n')
-            return `@${block.screenName} {\n${props}\n}`
-        }).join('\n\n')
+        const fullRange = new vscode.Range(
+            document.positionAt(0),
+            document.positionAt(text.length)
+        )
 
-        console.log(summary)
-        vscode.window.showInformationMessage(`Generated ${variants.length} variants — check the debug console.`)
+        editor.edit(editBuilder => {
+            editBuilder.replace(fullRange, newText)
+        })
+
+        vscode.window.showInformationMessage(`Scaffolded ${variants.length} variants for ${selector}.`)
     })
 
     context.subscriptions.push(disposable)

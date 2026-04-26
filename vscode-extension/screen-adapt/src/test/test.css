@@ -10,15 +10,25 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
 
+
   @mobile-vertical {
     width: 100vw;
-    font-size: 22px;
+    font-size: 0.67em;
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  @mobile-horizontal {
+    width: 95vw;
+    font-size: 1.17em;
+    display: grid;
     grid-template-columns: 1fr;
   }
 
   @tablet {
-    width: 90vw;
-    font-size: 28px;
+    width: 78vw;
+    font-size: 1.42em;
+    display: grid;
     grid-template-columns: repeat(2, 1fr);
   }
 }
