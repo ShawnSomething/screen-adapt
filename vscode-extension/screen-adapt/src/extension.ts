@@ -6,7 +6,7 @@ import { generateVariants } from './generator'
 import { insertVariants, hasExistingVariants } from './inserter'
 
 export function activate(context: vscode.ExtensionContext) {
-    const disposable = vscode.commands.registerCommand('screen-adapt.helloWorld', () => {
+    const disposable = vscode.commands.registerCommand('screen-adapt.scaffoldVariants', () => {
         const editor = vscode.window.activeTextEditor
         if (!editor) {
             vscode.window.showErrorMessage('No active file.')

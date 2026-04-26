@@ -14,10 +14,27 @@
   "contributes": {
     "commands": [
       {
-        "command": "screen-adapt.helloWorld",
-        "title": "Hello World"
+        "command": "screen-adapt.scaffoldVariants",
+        "title": "Screen Adapt: Add screen variants"
       }
-    ]
+    ],
+    "keybindings": [
+      {
+        "command": "screen-adapt.scaffoldVariants",
+        "key": "ctrl+shift+s",
+        "mac": "cmd+shift+s",
+        "when": "editorLangId == css"
+      }
+    ],
+    "menus": {
+      "editor/content": [
+        {
+          "command": "screen-adapt.scaffoldVariants",
+          "when": "editorLangId == css",
+          "group": "navigation"         
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
