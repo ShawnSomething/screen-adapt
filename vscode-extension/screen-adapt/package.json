@@ -16,6 +16,10 @@
       {
         "command": "screen-adapt.scaffoldVariants",
         "title": "Screen Adapt: Add screen variants"
+      },
+      {
+        "command": "screen-adapt.globalScan",
+        "title": "Screen Adapt: Adapt all selectors"
       }
     ],
     "keybindings": [
@@ -23,6 +27,12 @@
         "command": "screen-adapt.scaffoldVariants",
         "key": "ctrl+shift+s",
         "mac": "cmd+shift+s",
+        "when": "editorLangId == css"
+      },
+      {
+        "command": "screen-adapt.globalScan",
+        "key": "ctrl+shift+a",
+        "mac": "cmd+shift+a",
         "when": "editorLangId == css"
       }
     ],

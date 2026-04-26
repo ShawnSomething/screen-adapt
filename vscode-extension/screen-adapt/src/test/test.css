@@ -3,6 +3,11 @@
   mobile-horizontal: (max-width: 844px) and (orientation: landscape);
   tablet: (max-width: 1024px);
 }
+/* screen-adapt: skipped selectors (already have variants)
+   .hero
+   .header
+*/
+
 
 .hero {
   width: 800px;
@@ -37,7 +42,19 @@
   position: relative;
   padding: 48px;
 
+
   @mobile-vertical {
-    padding: 16px;
+    position: relative; /* check sizing */
+    padding: 1.00em;
+  }
+
+  @mobile-horizontal {
+    position: relative; /* check sizing */
+    padding: 1.76em;
+  }
+
+  @tablet {
+    position: relative; /* check sizing */
+    padding: 2.13em;
   }
 }
