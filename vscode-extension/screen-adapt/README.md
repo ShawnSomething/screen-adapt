@@ -8,13 +8,15 @@ No changes to JSX. No new layout system. No runtime cost.
 
 ## Requirements
 
-The PostCSS plugin is required to compile the custom syntax at build time.
+Screen Adapt requires the PostCSS plugin to compile the custom syntax at build time.
+
+When the extension activates, it checks whether `screen-adapt` is installed in your project. If not, it prompts you to install it automatically. You can also install it manually:
 
 ```bash
 npm install screen-adapt
 ```
 
-Add it to your PostCSS config:
+Either way, add it to your PostCSS config:
 
 ```js
 module.exports = {

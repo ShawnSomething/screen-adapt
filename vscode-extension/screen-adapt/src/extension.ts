@@ -6,8 +6,11 @@ import { generateVariants } from './generator'
 import { insertVariants, hasExistingVariants } from './inserter'
 import { globalScan } from './scanner'
 import { hasScreensBlock, insertScreensBlock } from './initialiser'
+import { checkAndInstallPlugin } from "./installer"
 
 export function activate(context: vscode.ExtensionContext) {
+    checkAndInstallPlugin(context)
+    
     //initialiser
     const initDisposable = vscode.commands.registerCommand('screen-adapt.initialise', () => {
     const editor = vscode.window.activeTextEditor
