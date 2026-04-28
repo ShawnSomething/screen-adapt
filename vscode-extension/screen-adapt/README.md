@@ -16,15 +16,17 @@ When the extension activates, it checks whether `screen-adapt` is installed in y
 npm install screen-adapt
 ```
 
-Either way, add it to your PostCSS config:
+Then create a PostCSS config file in your project root. If your project has `"type": "module"` in `package.json`, the file must be named `postcss.config.cjs`. Otherwise, `postcss.config.js` works.
 
 ```js
+const screenAdapt = require('screen-adapt')
+
 module.exports = {
-  plugins: [
-    require('screen-adapt')
-  ]
+  plugins: [screenAdapt.default || screenAdapt]
 }
 ```
+
+The `screenAdapt.default || screenAdapt` handles the ES module interop. Using `require('screen-adapt')` directly will throw a PostCSS plugin error.
 
 ---
 
