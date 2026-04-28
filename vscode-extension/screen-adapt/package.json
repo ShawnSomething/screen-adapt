@@ -3,7 +3,7 @@
   "displayName": "screen-adapt",
   "description": "A VS Code extension that makes responsive CSS the default workflow. Write CSS once, declare which screen sizes you care about, and the extension scaffolds the responsive variants automatically",
   "publisher": "ShawnKhoo",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "engines": {
     "vscode": "^1.116.0"
   },
