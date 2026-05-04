@@ -3,7 +3,7 @@
   "displayName": "screen-adapt",
   "description": "A VS Code extension that makes responsive CSS the default workflow. Write CSS once, declare which screen sizes you care about, and the extension scaffolds the responsive variants automatically",
   "publisher": "ShawnKhoo",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "engines": {
     "vscode": "^1.116.0"
   },
@@ -25,6 +25,14 @@
       {
         "command": "screen-adapt.initialise",
         "title": "Screen Adapt: Initialise @screens"
+      },
+      {
+        "command": "screen-adapt.tailwind.addVariants",
+        "title": "Screen Adapt: Add Tailwind variants"
+      },
+      {
+        "command": "screen-adapt.tailwind.adaptAll",
+        "title": "Screen Adapt: Adapt all elements"
       }
     ],
     "keybindings": [
@@ -40,17 +48,23 @@
         "mac": "cmd+shift+a",
         "when": "editorLangId == css"
       },
-            {
-        "command": "screen-adapt.scaffoldVariants",
-        "key": "ctrl+shift+s",
-        "mac": "cmd+shift+s",
-        "when": "editorLangId == css"
-      },
       {
         "command": "screen-adapt.initialise",
         "key": "ctrl+shift+i",
         "mac": "cmd+shift+i",
         "when": "editorLangId == css"
+      },
+      {
+        "command": "screen-adapt.tailwind.addVariants",
+        "key": "ctrl+shift+t",
+        "mac": "cmd+shift+t",
+        "when": "editorLangId == javascriptreact || editorLangId == typescriptreact"
+      },
+      {
+        "command": "screen-adapt.tailwind.adaptAll",
+        "key": "ctrl+shift+e",
+        "mac": "cmd+shift+e",
+        "when": "editorLangId == javascriptreact || editorLangId == typescriptreact"
       }
     ],
     "menus": {
@@ -59,6 +73,16 @@
           "command": "screen-adapt.scaffoldVariants",
           "when": "editorLangId == css",
           "group": "9_cutcopypaste"         
+        },
+        {
+          "command": "screen-adapt.tailwind.addVariants",
+          "when": "editorLangId == javascriptreact || editorLangId == typescriptreact",
+          "group": "9_cutcopypaste"
+        },
+        {
+          "command": "screen-adapt.tailwind.adaptAll",
+          "when": "editorLangId == javascriptreact || editorLangId == typescriptreact",
+          "group": "9_cutcopypaste"
         }
       ]
     }
