@@ -1,11 +1,11 @@
 # Screen Adapt
 
-Responsive CSS scaffolding. Write your base CSS — Screen Adapt generates the responsive variants and compiles them to standard media queries at build time.
+Responsive scaffolding for VS Code. Write your base CSS or Tailwind classes — Screen Adapt generates the responsive variants automatically. A PostCSS plugin compiles the custom CSS syntax to standard media queries at build time.
 
 Two parts:
 
 - **PostCSS plugin** — compiles custom `@screens` syntax to standard `@media` queries. Published to npm as [`screen-adapt`](https://www.npmjs.com/package/screen-adapt).
-- **VS Code extension** — scaffolds responsive variants automatically as you write CSS. Published to the VS Code Marketplace as [`ShawnKhoo.screen-adapt`](https://marketplace.visualstudio.com/items?itemName=ShawnKhoo.screen-adapt).
+- **VS Code extension** — scaffolds responsive variants automatically as you write CSS or Tailwind. Published to the VS Code Marketplace as [`ShawnKhoo.screen-adapt`](https://marketplace.visualstudio.com/items?itemName=ShawnKhoo.screen-adapt).
 
 No changes to JSX. No new layout system. No runtime cost.
 
@@ -13,9 +13,11 @@ No changes to JSX. No new layout system. No runtime cost.
 
 ## How it works
 
-You declare which screen sizes your project cares about in an `@screens` block at the top of your CSS file. The extension reads that block and scaffolds responsive variants for each selector you point it at. At build time, the PostCSS plugin compiles the custom at-rules to standard `@media` queries and outputs plain CSS.
+**CSS workflow** — you declare which screen sizes your project cares about in an `@screens` block at the top of your CSS file. The extension reads that block and scaffolds responsive variants for each selector you point it at. At build time, the PostCSS plugin compiles the custom at-rules to standard `@media` queries and outputs plain CSS.
 
-The dev never writes a media query by hand.
+**Tailwind workflow** — the extension reads breakpoints from your `tailwind.config.ts` or `tailwind.config.js`. Point it at any JSX/TSX element with a `className`, and it scaffolds the prefixed responsive variants automatically. No PostCSS plugin required.
+
+The dev never writes a media query or a responsive prefix by hand.
 
 ---
 
@@ -24,7 +26,7 @@ The dev never writes a media query by hand.
 ```
 screen-adapt/
   postcss-plugin/     PostCSS plugin — compiles @screens syntax at build time
-  vscode-extension/   VS Code extension — scaffolds variants as you write CSS
+  vscode-extension/   VS Code extension — scaffolds variants as you write CSS or Tailwind
 ```
 
 Each package has its own README with setup and usage details.
@@ -41,7 +43,7 @@ Search for `Screen Adapt` in the VS Code Marketplace, or install directly:
 ext install ShawnKhoo.screen-adapt
 ```
 
-The extension will prompt you to install the PostCSS plugin when it activates. You can also install it manually:
+**CSS workflow** — the extension will prompt you to install the PostCSS plugin when it activates. You can also install it manually:
 
 ```bash
 npm install screen-adapt
@@ -56,6 +58,8 @@ module.exports = {
   ]
 }
 ```
+
+**Tailwind workflow** — no additional setup. The extension reads your existing `tailwind.config.ts` or `tailwind.config.js` automatically.
 
 ---
 
