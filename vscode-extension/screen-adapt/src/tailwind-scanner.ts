@@ -1,9 +1,9 @@
 import type { ClassNameInfo } from './jsx-class-detector'
 import { parseBaseClasses } from './tailwind-class-parser'
 import { generateTailwindVariants } from './tailwind-generator'
-import { hasExistingVariants, insertVariants } from './tailwind-inserter'
+import { hasExistingVariants, insertVariants, insertCheckComment } from './tailwind-inserter'
 
-const COMMENT_MARKER = '{/* screen-adapt: skipped elements'
+const COMMENT_MARKER = '/* screen-adapt: skipped elements'
 
 function findAllClassNames(text: string): ClassNameInfo[] {
   const pattern = /className\s*=\s*(?:\{\s*)?(['"])(.*?)\1(?:\s*\})?/g
@@ -34,7 +34,17 @@ function buildComment(skipped: Array<{ tag: string; preview: string }>): string 
   const lines = skipped
     .map(({ tag, preview }) => `   <${tag} className="${preview}">`)
     .join('\n')
-  return `${COMMENT_MARKER} (already have variants)\n${lines}\n*/}`
+  return `${COMMENT_MARKER} (already have variants)\n${lines}\n*/`
+}
+
+function findAfterImports(text: string): number {
+  const lines = text.split('\n')
+  let lastImportLine = -1
+  for (let i = 0; i < lines.length; i++) {
+    if (/^\s*import\s/.test(lines[i])) lastImportLine = i
+  }
+  if (lastImportLine === -1) return 0
+  return lines.slice(0, lastImportLine + 1).join('\n').length + 1
 }
 
 function insertOrReplaceComment(text: string, comment: string): string {
@@ -44,10 +54,12 @@ function insertOrReplaceComment(text: string, comment: string): string {
     const closeIdx = text.indexOf('*/}', existing)
     const end = closeIdx !== -1 ? closeIdx + 3 : existing
     const stripped = text.slice(0, existing) + text.slice(end).replace(/^\n/, '')
-    return comment ? comment + '\n' + stripped : stripped
+    return comment ? insertOrReplaceComment(stripped, comment) : stripped
   }
 
-  return comment ? comment + '\n' + text : text
+  if (!comment) return text
+  const insertAt = findAfterImports(text)
+  return text.slice(0, insertAt) + comment + '\n' + text.slice(insertAt)
 }
 
 export function globalScan(text: string, breakpoints: Map<string, string>): string {
@@ -59,7 +71,7 @@ export function globalScan(text: string, breakpoints: Map<string, string>): stri
   for (const info of allClassNames) {
     if (hasExistingVariants(info.classes, breakpoints)) {
       const preview =
-        info.classes.length > 40 ? info.classes.slice(0, 40) + '...' : info.classes
+        info.classes.length > 80 ? info.classes.slice(0, 80) + '...' : info.classes
       const tag = getTagName(text, info.start)
       skipped.push({ tag, preview })
     } else {
@@ -71,13 +83,16 @@ export function globalScan(text: string, breakpoints: Map<string, string>): stri
   toProcess.sort((a, b) => b.start - a.start)
 
   let result = text
+  const allFlagged = new Set<string>()
 
   for (const info of toProcess) {
     const baseClasses = parseBaseClasses(info.classes)
     if (baseClasses.length === 0) continue
-    const variants = generateTailwindVariants(baseClasses, breakpoints)
+    const { variants, flagged } = generateTailwindVariants(baseClasses, breakpoints)
+    flagged.forEach(f => allFlagged.add(f))
     result = insertVariants(result, info, variants)
   }
 
-  return insertOrReplaceComment(result, buildComment(skipped))
+  result = insertOrReplaceComment(result, buildComment(skipped))
+  return insertCheckComment(result, [...allFlagged])
 }

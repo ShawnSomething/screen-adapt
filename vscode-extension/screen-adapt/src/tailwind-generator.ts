@@ -24,14 +24,14 @@ function isNumeric(s: string): boolean {
 }
 
 function scaleSpacing(prefix: string, size: string, factor: number): string {
-  if (!isNumeric(size)) return `${prefix}-${size} /* check */`
+  if (!isNumeric(size)) return `${prefix}-${size}${CHECK}`
   return `${prefix}-${nearestSpacing(toRem(parseFloat(size)) * factor)}`
 }
 
 function scaleWidth(size: string, factor: number, bpEm: number): string {
   const special = ['full', 'screen', 'auto', 'min', 'max', 'fit']
   if (special.includes(size)) return `w-${size}`
-  if (size.includes('/') || !isNumeric(size)) return `w-${size} /* check */`
+  if (size.includes('/') || !isNumeric(size)) return `w-${size}${CHECK}`
 
   const scaledRem = toRem(parseFloat(size)) * factor
   if (scaledRem >= bpEm * 0.85) return 'w-full'
@@ -41,15 +41,17 @@ function scaleWidth(size: string, factor: number, bpEm: number): string {
 function scaleHeight(size: string, factor: number): string {
   const special = ['full', 'screen', 'auto', 'min', 'max', 'fit', 'svh', 'dvh', 'lvh']
   if (special.includes(size)) return `h-${size}`
-  if (!isNumeric(size)) return `h-${size} /* check */`
+  if (!isNumeric(size)) return `h-${size}${CHECK}`
   return `h-${nearestSpacing(toRem(parseFloat(size)) * factor)}`
 }
 
 function scaleText(size: string, stepDown: number): string {
   const idx = TEXT_SCALE.indexOf(size)
-  if (idx === -1) return `text-${size} /* check */`
+  if (idx === -1) return `text-${size}${CHECK}`
   return `text-${TEXT_SCALE[Math.max(0, idx - stepDown)]}`
 }
+
+const CHECK = '__check__'
 
 function generateClass(
   cls: string,
@@ -66,13 +68,13 @@ function generateClass(
 
   const minMaxH = cls.match(/^(min-h|max-h)-(.+)$/)
   if (minMaxH) {
-    if (!isNumeric(minMaxH[2])) return `${cls} /* check */`
+    if (!isNumeric(minMaxH[2])) return `${cls}${CHECK}`
     return `${minMaxH[1]}-${nearestSpacing(toRem(parseFloat(minMaxH[2])) * factor)}`
   }
 
   const maxW = cls.match(/^max-w-(.+)$/)
   if (maxW) {
-    if (!isNumeric(maxW[1])) return `${cls} /* check */`
+    if (!isNumeric(maxW[1])) return `${cls}${CHECK}`
     return `max-w-${nearestSpacing(toRem(parseFloat(maxW[1])) * factor)}`
   }
 
@@ -92,20 +94,26 @@ function generateClass(
   if (cls === 'flex-row') return bpIndex === 0 ? 'flex-col' : 'flex-row'
   if (cls === 'flex-col') return 'flex-col'
 
-  return `${cls} /* check */`
+  return `${cls}${CHECK}`
+}
+
+export interface GeneratorResult {
+  variants: string[]
+  flagged: string[]
 }
 
 export function generateTailwindVariants(
   baseClasses: string[],
   breakpoints: Map<string, string>,
-): string[] {
+): GeneratorResult {
   const bpList = [...breakpoints.entries()].map(([name, em]) => ({
     name,
     em: parseFloat(em),
   }))
 
   const total = bpList.length
-  const result: string[] = []
+  const variants: string[] = []
+  const flagged: string[] = []
 
   for (let i = 0; i < bpList.length; i++) {
     const { name, em } = bpList[i]
@@ -113,9 +121,17 @@ export function generateTailwindVariants(
     const stepDown = total - i
 
     for (const cls of baseClasses) {
-      result.push(`${name}:${generateClass(cls, factor, stepDown, em, i)}`)
+      const generated = generateClass(cls, factor, stepDown, em, i)
+      if (generated.endsWith(CHECK)) {
+        const clean = generated.slice(0, -CHECK.length)
+        const variant = `${name}:${clean}`
+        variants.push(variant)
+        flagged.push(variant)
+      } else {
+        variants.push(`${name}:${generated}`)
+      }
     }
   }
 
-  return result
+  return { variants, flagged }
 }

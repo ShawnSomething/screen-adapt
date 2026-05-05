@@ -10,7 +10,10 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": ["onLanguage:javascriptreact", "onLanguage:typescriptreact"],
+  "activationEvents": [
+    "onLanguage:javascriptreact",
+    "onLanguage:typescriptreact"
+  ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
@@ -72,7 +75,7 @@
         {
           "command": "screen-adapt.scaffoldVariants",
           "when": "editorLangId == css",
-          "group": "9_cutcopypaste"         
+          "group": "9_cutcopypaste"
         },
         {
           "command": "screen-adapt.tailwind.addVariants",
@@ -96,17 +99,20 @@
     "test": "vscode-test"
   },
   "devDependencies": {
-    "@types/vscode": "^1.116.0",
     "@types/mocha": "^10.0.10",
     "@types/node": "22.x",
-    "typescript-eslint": "^8.56.1",
+    "@types/vscode": "^1.116.0",
+    "@vscode/test-cli": "^0.0.12",
+    "@vscode/test-electron": "^2.5.2",
     "eslint": "^9.39.3",
     "typescript": "^5.9.3",
-    "@vscode/test-cli": "^0.0.12",
-    "@vscode/test-electron": "^2.5.2"
+    "typescript-eslint": "^8.56.1"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ShawnSomething/screen-adapt.git"
+  },
+  "dependencies": {
+    "screen-adapt": "^1.0.0"
   }
 }
