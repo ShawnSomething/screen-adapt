@@ -10,7 +10,7 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": ["onLanguage:javascriptreact", "onLanguage:typescriptreact"],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
